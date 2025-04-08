@@ -19,6 +19,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Volleyball, User } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { Team, Match } from "@shared/schema";
 
 const Dashboard = () => {
   const { isAuthenticated, user, isLoading } = useAuth();
@@ -31,27 +32,27 @@ const Dashboard = () => {
     }
   }, [isAuthenticated, isLoading, navigate]);
 
-  const { data: matches } = useQuery({
+  const { data: matches } = useQuery<Match[]>({
     queryKey: ["/api/matches/upcoming"],
     enabled: isAuthenticated,
   });
 
-  const { data: teams } = useQuery({
+  const { data: teams } = useQuery<Team[]>({
     queryKey: ["/api/teams"],
     enabled: isAuthenticated,
   });
 
   // Get user team
-  const userTeam = teams?.find(team => team.id === user?.teamId);
+  const userTeam = teams?.find((team: Team) => team.id === user?.teamId);
 
   // Filter matches for user's team
   const userMatches = matches?.filter(
-    match => match.team1Id === user?.teamId || match.team2Id === user?.teamId
+    (match: Match) => match.team1Id === user?.teamId || match.team2Id === user?.teamId
   );
 
   // Get team name by ID
   const getTeamName = (teamId: number) => {
-    return teams?.find(team => team.id === teamId)?.name || "Équipe inconnue";
+    return teams?.find((team: Team) => team.id === teamId)?.name || "Équipe inconnue";
   };
 
   if (isLoading) {
@@ -113,8 +114,8 @@ const Dashboard = () => {
         {/* Player Stats */}
         <PlayerStats />
         
-        {/* Team Management (if player is admin/captain) */}
-        {user?.role === "admin" && <TeamManagement />}
+        {/* Team Management (if player is admin/captain or has no team) */}
+        {(user?.role === "admin" || user?.role === "player") && <TeamManagement />}
         
         {/* Upcoming Matches */}
         <div className="mb-8">
@@ -132,7 +133,7 @@ const Dashboard = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {userMatches.map(match => {
+                    {userMatches.map((match: Match) => {
                       const isTeam1 = match.team1Id === user?.teamId;
                       const opponentId = isTeam1 ? match.team2Id : match.team1Id;
                       const opponentName = getTeamName(opponentId);

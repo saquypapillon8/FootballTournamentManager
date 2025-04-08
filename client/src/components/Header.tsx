@@ -82,7 +82,7 @@ const Header = () => {
                   <DropdownMenuItem onClick={() => window.location.href = "/dashboard"}>
                     Tableau de bord
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => window.location.href = "/profile"}>
+                  <DropdownMenuItem onClick={() => window.location.href = `/player/${user?.id}`}>
                     Mon profil
                   </DropdownMenuItem>
                   {isAdmin && (
@@ -181,7 +181,7 @@ const Header = () => {
                       Tableau de bord
                     </a>
                   </Link>
-                  <Link href="/profile">
+                  <Link href={`/player/${user?.id}`}>
                     <a
                       className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-teal-800"
                       onClick={() => setMobileMenuOpen(false)}

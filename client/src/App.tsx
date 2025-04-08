@@ -9,6 +9,7 @@ import AdminPanel from "@/pages/AdminPanel";
 import Matches from "@/pages/Matches";
 import Teams from "@/pages/Teams";
 import Leaderboard from "@/pages/Leaderboard";
+import PlayerProfile from "@/pages/PlayerProfile";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/hooks/useAuth";
@@ -28,6 +29,7 @@ function App() {
             <Route path="/matches" component={Matches} />
             <Route path="/teams" component={Teams} />
             <Route path="/leaderboard" component={Leaderboard} />
+            <Route path="/player/:id" component={PlayerProfile} />
             <Route component={NotFound} />
           </Switch>
         </main>
