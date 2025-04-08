@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "wouter";
+import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const { login, isLoading } = useAuth();
+  const [, navigate] = useLocation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,11 +69,12 @@ const Login = () => {
                 <Label htmlFor="remember_me" className="text-sm font-normal">Se souvenir de moi</Label>
               </div>
               
-              <Link href="/forgot-password">
-                <a className="text-sm font-medium text-teal-700 hover:text-teal-800">
-                  Mot de passe oublié?
-                </a>
-              </Link>
+              <span
+                className="text-sm font-medium text-teal-700 hover:text-teal-800 cursor-pointer"
+                onClick={() => navigate("/forgot-password")}
+              >
+                Mot de passe oublié?
+              </span>
             </div>
             
             <Button 
@@ -88,7 +90,7 @@ const Login = () => {
                 type="button" 
                 className="w-full bg-indigo-700 hover:bg-indigo-800"
                 variant="outline"
-                onClick={() => window.location.href = "/admin"}
+                onClick={() => navigate("/admin")}
               >
                 Accès Administrateur
               </Button>
@@ -108,11 +110,12 @@ const Login = () => {
             <div className="mt-6">
               <p className="text-center text-sm text-gray-600">
                 Vous n'avez pas de compte?{" "}
-                <Link href="/register">
-                  <span className="font-medium text-teal-700 hover:text-teal-800">
-                    Inscrivez-vous
-                  </span>
-                </Link>
+                <span 
+                  className="font-medium text-teal-700 hover:text-teal-800 cursor-pointer"
+                  onClick={() => navigate("/register")}
+                >
+                  Inscrivez-vous
+                </span>
               </p>
             </div>
           </div>
