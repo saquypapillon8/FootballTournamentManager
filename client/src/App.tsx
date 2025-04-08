@@ -5,7 +5,7 @@ import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import Dashboard from "@/pages/Dashboard";
-import AdminPage from "@/pages/AdminPage";
+import Admin from "@/pages/Admin";
 import Matches from "@/pages/Matches";
 import Teams from "@/pages/Teams";
 import Leaderboard from "@/pages/Leaderboard";
@@ -25,7 +25,7 @@ function App() {
             <Route path="/login" component={Login} />
             <Route path="/register" component={Register} />
             <Route path="/dashboard" component={Dashboard} />
-            <Route path="/admin" component={AdminPage} />
+            <Route path="/admin" component={Admin} />
             <Route path="/matches" component={Matches} />
             <Route path="/teams" component={Teams} />
             <Route path="/leaderboard" component={Leaderboard} />
