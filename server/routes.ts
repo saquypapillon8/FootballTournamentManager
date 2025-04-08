@@ -383,6 +383,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Statistics routes
+  app.get("/api/statistics", async (req: Request, res: Response) => {
+    try {
+      const allStats = await storage.getAllStatistics();
+      return res.status(200).json(allStats);
+    } catch (error) {
+      return res.status(500).json({ message: "Failed to get all player statistics" });
+    }
+  });
+  
   app.get("/api/statistics/:playerId", async (req: Request, res: Response) => {
     try {
       const playerId = parseInt(req.params.playerId);

@@ -82,6 +82,18 @@ const Login = () => {
             >
               {isLoading ? "Connexion en cours..." : "Se connecter"}
             </Button>
+
+            <div className="mt-3">
+              <Link href="/admin">
+                <Button 
+                  type="button" 
+                  className="w-full bg-indigo-700 hover:bg-indigo-800"
+                  variant="outline"
+                >
+                  Accès Administrateur
+                </Button>
+              </Link>
+            </div>
           </form>
           
           <div className="mt-6">
@@ -98,9 +110,9 @@ const Login = () => {
               <p className="text-center text-sm text-gray-600">
                 Vous n'avez pas de compte?{" "}
                 <Link href="/register">
-                  <a className="font-medium text-teal-700 hover:text-teal-800">
+                  <span className="font-medium text-teal-700 hover:text-teal-800">
                     Inscrivez-vous
-                  </a>
+                  </span>
                 </Link>
               </p>
             </div>
