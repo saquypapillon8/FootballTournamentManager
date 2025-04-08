@@ -70,7 +70,7 @@ const AdminPage = () => {
   // Redirections si l'utilisateur n'est pas admin
   useEffect(() => {
     if (!isAdmin && !isSuperAdmin) {
-      window.location.href = "/";
+      window.location.href = "/dashboard";
     }
   }, [isAdmin, isSuperAdmin]);
   
@@ -105,25 +105,30 @@ const AdminPage = () => {
   const { data: allStatistics, isLoading: isStatisticsLoading } = useQuery({
     queryKey: ["/api/statistics"],
     queryFn: async () => {
-      // Nous allons chercher les statistiques de chaque joueur
-      if (!users) return [];
-      
-      const statsPromises = users.map(async (user: User) => {
-        if (!user.statisticsId) return null;
-        
-        try {
-          const res = await fetch(`/api/statistics/${user.id}`);
-          if (!res.ok) return null;
-          
-          const stats = await res.json();
-          return { ...stats, playerName: user.name, playerId: user.id };
-        } catch (e) {
-          return null;
+      try {
+        const res = await fetch("/api/statistics");
+        if (!res.ok) {
+          throw new Error("Erreur lors de la récupération des statistiques");
         }
-      });
-      
-      const statsResults = await Promise.all(statsPromises);
-      return statsResults.filter(Boolean);
+        
+        const stats = await res.json();
+        
+        // Enrichir les statistiques avec les noms des joueurs
+        if (users) {
+          return stats.map((stat: any) => {
+            const player = users.find((u: User) => u.id === stat.playerId);
+            return { 
+              ...stat, 
+              playerName: player ? player.name : "Joueur inconnu"
+            };
+          });
+        }
+        
+        return stats;
+      } catch (e) {
+        console.error("Erreur lors de la récupération des statistiques:", e);
+        return [];
+      }
     },
     enabled: !!users
   });
@@ -567,13 +572,22 @@ const AdminPage = () => {
           <h1 className="text-3xl font-bold text-gray-900">Panneau d'Administration</h1>
           <p className="text-gray-600">Gérez les équipes, les matchs, les utilisateurs et les statistiques</p>
         </div>
-        <div className="flex space-x-2">
-          <Badge className="bg-indigo-100 text-indigo-800 py-1.5 px-3 text-sm">
-            {isSuperAdmin ? "Super Admin" : "Admin"}
-          </Badge>
-          <Badge className="bg-green-100 text-green-800 py-1.5 px-3 text-sm">
-            {user?.name}
-          </Badge>
+        <div className="flex items-center space-x-4">
+          <Button 
+            variant="outline"
+            className="bg-teal-50 hover:bg-teal-100 text-teal-600"
+            onClick={() => window.location.href = "/dashboard"}
+          >
+            Retour au tableau de bord
+          </Button>
+          <div className="flex space-x-2">
+            <Badge className="bg-indigo-100 text-indigo-800 py-1.5 px-3 text-sm">
+              {isSuperAdmin ? "Super Admin" : "Admin"}
+            </Badge>
+            <Badge className="bg-green-100 text-green-800 py-1.5 px-3 text-sm">
+              {user?.name}
+            </Badge>
+          </div>
         </div>
       </div>
       
@@ -1216,7 +1230,7 @@ const AdminPage = () => {
                         fill="#8884d8"
                         label
                       >
-                        {scorersPieData?.map((entry, index) => (
+                        {scorersPieData?.map((entry: {name: string, value: number}, index: number) => (
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>

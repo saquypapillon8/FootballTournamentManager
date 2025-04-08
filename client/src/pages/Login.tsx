@@ -84,15 +84,14 @@ const Login = () => {
             </Button>
 
             <div className="mt-3">
-              <Link href="/admin">
-                <Button 
-                  type="button" 
-                  className="w-full bg-indigo-700 hover:bg-indigo-800"
-                  variant="outline"
-                >
-                  Accès Administrateur
-                </Button>
-              </Link>
+              <Button 
+                type="button" 
+                className="w-full bg-indigo-700 hover:bg-indigo-800"
+                variant="outline"
+                onClick={() => window.location.href = "/admin"}
+              >
+                Accès Administrateur
+              </Button>
             </div>
           </form>
           
