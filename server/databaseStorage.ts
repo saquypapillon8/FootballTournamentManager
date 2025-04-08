@@ -84,37 +84,40 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createUser(userData: InsertUser): Promise<User> {
-    // Hash password if it's not already hashed
-    if (!userData.password.startsWith('$2')) {
-      userData.password = bcrypt.hashSync(userData.password, 10);
-    }
-
-    const id = this.userIdCounter++;
-    const role = userData.role || 'player';
-    const teamId = userData.teamId || null;
-    
-    const user: User = {
-      ...userData,
-      id,
-      role,
-      teamId,
-      statisticsId: null,
-      dateRegistered: new Date()
-    };
-    
-    const [newUser] = await db.insert(users).values(user).returning();
-
-    // Create initial statistics for player
-    if (userData.role === 'player') {
-      const stats = await this.createStatistics({ playerId: id });
-      await db.update(users)
-        .set({ statisticsId: stats.id })
-        .where(eq(users.id, id));
+    try {
+      // Hash password if it's not already hashed
+      if (!userData.password.startsWith('$2')) {
+        userData.password = bcrypt.hashSync(userData.password, 10);
+      }
       
-      user.statisticsId = stats.id;
+      // Préparation des données pour l'insertion
+      const insertData = {
+        name: userData.name,
+        email: userData.email,
+        password: userData.password,
+        role: userData.role || 'player',
+        teamId: userData.teamId || null
+      };
+      
+      // Insertion de l'utilisateur et récupération des données générées
+      const [newUser] = await db.insert(users).values(insertData).returning();
+      
+      // Create initial statistics for player
+      if (newUser.role === 'player') {
+        const stats = await this.createStatistics({ playerId: newUser.id });
+        const [updatedUser] = await db.update(users)
+          .set({ statisticsId: stats.id })
+          .where(eq(users.id, newUser.id))
+          .returning();
+        
+        return updatedUser;
+      }
+      
+      return newUser;
+    } catch (error) {
+      console.error("Erreur lors de la création de l'utilisateur:", error);
+      throw error;
     }
-    
-    return user;
   }
 
   async updateUser(id: number, userData: Partial<User>): Promise<User | undefined> {
@@ -150,20 +153,24 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createTeam(teamData: InsertTeam): Promise<Team> {
-    const id = this.teamIdCounter++;
-    
-    const team: Team = {
-      ...teamData,
-      id,
-      logo: teamData.logo || null,
-      captainId: teamData.captainId || null,
-      players: teamData.players || [],
-      points: 0,
-      matchesPlayed: 0
-    };
-    
-    const [newTeam] = await db.insert(teams).values(team).returning();
-    return newTeam;
+    try {
+      // Préparation des données pour l'insertion
+      const insertData = {
+        name: teamData.name,
+        logo: teamData.logo || null,
+        captainId: teamData.captainId || null,
+        players: teamData.players || [],
+        points: 0,
+        matchesPlayed: 0
+      };
+      
+      // Insertion de l'équipe et récupération des données générées
+      const [newTeam] = await db.insert(teams).values(insertData).returning();
+      return newTeam;
+    } catch (error) {
+      console.error("Erreur lors de la création de l'équipe:", error);
+      throw error;
+    }
   }
 
   async updateTeam(id: number, teamData: Partial<Team>): Promise<Team | undefined> {
@@ -216,18 +223,24 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createMatch(matchData: InsertMatch): Promise<Match> {
-    const id = this.matchIdCounter++;
-    
-    const match: Match = {
-      ...matchData,
-      id,
-      scoreTeam1: 0,
-      scoreTeam2: 0,
-      status: matchData.status || 'pending'
-    };
-    
-    const [newMatch] = await db.insert(matches).values(match).returning();
-    return newMatch;
+    try {
+      // Préparation des données pour l'insertion
+      const insertData = {
+        team1Id: matchData.team1Id,
+        team2Id: matchData.team2Id,
+        matchDate: matchData.matchDate,
+        status: matchData.status || 'pending',
+        scoreTeam1: 0,
+        scoreTeam2: 0
+      };
+      
+      // Insertion du match et récupération des données générées
+      const [newMatch] = await db.insert(matches).values(insertData).returning();
+      return newMatch;
+    } catch (error) {
+      console.error("Erreur lors de la création du match:", error);
+      throw error;
+    }
   }
 
   async updateMatch(id: number, matchData: Partial<Match>): Promise<Match | undefined> {
@@ -268,19 +281,23 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createStatistics(statsData: InsertStatistics): Promise<Statistics> {
-    const id = this.statisticsIdCounter++;
-    
-    const stats: Statistics = {
-      ...statsData,
-      id,
-      goalsScored: 0,
-      assists: 0,
-      yellowCards: 0,
-      redCards: 0
-    };
-    
-    const [newStats] = await db.insert(statistics).values(stats).returning();
-    return newStats;
+    try {
+      // Préparation des données pour l'insertion
+      const insertData = {
+        playerId: statsData.playerId,
+        goalsScored: 0,
+        assists: 0,
+        yellowCards: 0,
+        redCards: 0
+      };
+      
+      // Insertion des statistiques et récupération des données générées
+      const [newStats] = await db.insert(statistics).values(insertData).returning();
+      return newStats;
+    } catch (error) {
+      console.error("Erreur lors de la création des statistiques:", error);
+      throw error;
+    }
   }
 
   async updateStatistics(id: number, statsData: Partial<Statistics>): Promise<Statistics | undefined> {
