@@ -41,13 +41,13 @@ const Header = () => {
           <nav className="hidden md:flex space-x-8">
             {navigation.map((item) => (
               <Link key={item.name} href={item.href}>
-                <a className={`px-3 py-2 rounded-md text-sm font-medium cursor-pointer ${
+                <span className={`px-3 py-2 rounded-md text-sm font-medium cursor-pointer ${
                   location === item.href 
                     ? 'text-white font-medium' 
                     : 'text-teal-300 hover:text-white'
                 }`}>
                   {item.name}
-                </a>
+                </span>
               </Link>
             ))}
           </nav>
@@ -79,16 +79,22 @@ const Header = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => window.location.href = "/dashboard"}>
-                    Tableau de bord
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => window.location.href = `/player/${user?.id}`}>
-                    Mon profil
-                  </DropdownMenuItem>
-                  {isAdmin && (
-                    <DropdownMenuItem onClick={() => window.location.href = "/admin"}>
-                      Administration
+                  <Link href="/dashboard">
+                    <DropdownMenuItem>
+                      Tableau de bord
                     </DropdownMenuItem>
+                  </Link>
+                  <Link href={`/player/${user?.id}`}>
+                    <DropdownMenuItem>
+                      Mon profil
+                    </DropdownMenuItem>
+                  </Link>
+                  {isAdmin && (
+                    <Link href="/admin">
+                      <DropdownMenuItem>
+                        Administration
+                      </DropdownMenuItem>
+                    </Link>
                   )}
                   <DropdownMenuItem onClick={logout}>
                     Se déconnecter
@@ -122,7 +128,7 @@ const Header = () => {
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navigation.map((item) => (
               <Link key={item.name} href={item.href}>
-                <a
+                <span
                   className={`block px-3 py-2 rounded-md text-base font-medium ${
                     location === item.href
                       ? 'bg-teal-800 text-white'
@@ -131,7 +137,7 @@ const Header = () => {
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.name}
-                </a>
+                </span>
               </Link>
             ))}
           </div>
@@ -174,32 +180,32 @@ const Header = () => {
                 </div>
                 <div className="mt-3 px-2 space-y-1">
                   <Link href="/dashboard">
-                    <a
+                    <span
                       className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-teal-800"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       Tableau de bord
-                    </a>
+                    </span>
                   </Link>
                   <Link href={`/player/${user?.id}`}>
-                    <a
+                    <span
                       className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-teal-800"
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       Mon profil
-                    </a>
+                    </span>
                   </Link>
                   {isAdmin && (
                     <Link href="/admin">
-                      <a
+                      <span
                         className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-teal-800"
                         onClick={() => setMobileMenuOpen(false)}
                       >
                         Administration
-                      </a>
+                      </span>
                     </Link>
                   )}
-                  <a
+                  <span
                     className="block px-3 py-2 rounded-md text-base font-medium text-white hover:bg-teal-800 cursor-pointer"
                     onClick={() => {
                       logout();
@@ -207,7 +213,7 @@ const Header = () => {
                     }}
                   >
                     Se déconnecter
-                  </a>
+                  </span>
                 </div>
               </div>
             )}
