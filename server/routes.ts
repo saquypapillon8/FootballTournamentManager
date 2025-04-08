@@ -23,12 +23,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Generate JWT token
       const token = generateToken(newUser);
       
-      // Don't return the password
+      // Don't return the password but make sure ID is included
       const { password, ...userWithoutPassword } = newUser;
       
       return res.status(201).json({ 
         message: "User registered successfully",
-        user: userWithoutPassword,
+        user: {
+          ...userWithoutPassword,
+          id: newUser.id // Assurez-vous que l'ID est inclus explicitement
+        },
         token
       });
     } catch (error) {
@@ -58,12 +61,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Generate JWT token
       const token = generateToken(user);
       
-      // Don't return the password
+      // Don't return the password but make sure ID is included
       const { password: _, ...userWithoutPassword } = user;
       
       return res.status(200).json({ 
         message: "Login successful",
-        user: userWithoutPassword,
+        user: {
+          ...userWithoutPassword,
+          id: user.id // Assurez-vous que l'ID est inclus explicitement
+        },
         token
       });
     } catch (error) {

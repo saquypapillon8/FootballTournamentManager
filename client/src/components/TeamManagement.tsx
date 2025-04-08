@@ -109,6 +109,7 @@ const TeamManagement = () => {
       });
       queryClient.invalidateQueries({ queryKey: [`/api/teams/${user?.teamId}`] });
       setNewPlayerId("");
+      setShowUserList(false);
     },
     onError: (error: any) => {
       toast({
@@ -118,6 +119,9 @@ const TeamManagement = () => {
       });
     }
   });
+  
+  // State for user list modal
+  const [showUserList, setShowUserList] = useState(false);
 
   const handleCreateTeam = () => {
     if (!teamName.trim()) {
@@ -347,8 +351,62 @@ const TeamManagement = () => {
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Ajouter
               </Button>
+              <Button
+                className="ml-3 bg-green-600 hover:bg-green-700"
+                onClick={() => setShowUserList(true)}
+              >
+                Voir les utilisateurs
+              </Button>
             </div>
           )}
+          
+          {/* Liste des utilisateurs disponibles */}
+          <Dialog open={showUserList} onOpenChange={setShowUserList}>
+            <DialogContent className="sm:max-w-[600px]">
+              <DialogHeader>
+                <DialogTitle>Liste des utilisateurs disponibles</DialogTitle>
+                <DialogDescription>
+                  Sélectionnez un utilisateur à ajouter à votre équipe. Vous avez besoin de son ID.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="overflow-x-auto max-h-[400px]">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>ID</TableHead>
+                      <TableHead>Nom</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Action</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {allUsers?.filter(u => 
+                      !teamMembers?.some(m => m.id === u.id)
+                    ).map(user => (
+                      <TableRow key={user.id}>
+                        <TableCell className="font-medium">{user.id}</TableCell>
+                        <TableCell>{user.name}</TableCell>
+                        <TableCell>{user.email}</TableCell>
+                        <TableCell>
+                          <Button 
+                            variant="outline" 
+                            className="bg-indigo-100 hover:bg-indigo-200"
+                            onClick={() => addPlayerMutation.mutate(user.id)}
+                            disabled={addPlayerMutation.isPending}
+                          >
+                            Ajouter à l'équipe
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+              <DialogFooter>
+                <Button onClick={() => setShowUserList(false)}>Fermer</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </CardContent>
       </Card>
     </div>
