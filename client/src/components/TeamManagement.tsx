@@ -94,20 +94,26 @@ const TeamManagement = () => {
     mutationFn: async (playerId: number) => {
       if (!team) throw new Error("No team found");
       
-      const players = Array.isArray(team.players) ? [...team.players, playerId] : [playerId];
-      
-      return apiRequest(
+      const response = await apiRequest(
         "PUT", 
         `/api/teams/${team.id}`, 
-        { players }
+        { playerId }
       );
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Une erreur s'est produite lors de l'ajout du joueur");
+      }
+      
+      return await response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
         title: "Joueur ajouté",
         description: "Le joueur a été ajouté à votre équipe avec succès.",
       });
       queryClient.invalidateQueries({ queryKey: [`/api/teams/${user?.teamId}`] });
+      queryClient.invalidateQueries({ queryKey: ["/api/users"] });
       setNewPlayerId("");
       setShowUserList(false);
     },
@@ -356,12 +362,7 @@ const TeamManagement = () => {
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Ajouter
               </Button>
-              <Button
-                className="ml-3 bg-green-600 hover:bg-green-700"
-                onClick={() => setShowUserList(true)}
-              >
-                Voir les utilisateurs
-              </Button>
+
             </div>
           )}
           

@@ -210,14 +210,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Not authorized to update this team" });
       }
       
-      // Update the team
-      const updatedTeam = await storage.updateTeam(teamId, req.body);
-      
-      return res.status(200).json({ 
-        message: "Team updated successfully",
-        team: updatedTeam
-      });
+      // Si l'ID du joueur est fourni, c'est une demande d'ajout de joueur
+      if (req.body.playerId) {
+        const playerId = parseInt(req.body.playerId);
+        
+        // Vérifier si l'équipe a déjà 8 joueurs
+        const teamMembers = await storage.getAllUsers();
+        const teamMemberCount = Array.from(teamMembers.values()).filter(user => user.teamId === teamId).length;
+        
+        if (teamMemberCount >= 8) {
+          return res.status(400).json({ message: "L'équipe a déjà atteint le maximum de 8 joueurs" });
+        }
+        
+        // Vérifier si le joueur est déjà dans une équipe
+        const player = await storage.getUser(playerId);
+        if (!player) {
+          return res.status(404).json({ message: "Joueur non trouvé" });
+        }
+        
+        if (player.teamId !== null) {
+          return res.status(400).json({ message: "Ce joueur fait déjà partie d'une équipe" });
+        }
+        
+        // Ajouter le joueur à l'équipe
+        await storage.updateUser(playerId, { teamId: teamId });
+        
+        const updatedTeam = await storage.getTeam(teamId);
+        return res.status(200).json({ 
+          message: "Joueur ajouté à l'équipe avec succès",
+          team: updatedTeam
+        });
+      } else {
+        // Mise à jour normale de l'équipe
+        const updatedTeam = await storage.updateTeam(teamId, req.body);
+        
+        return res.status(200).json({ 
+          message: "Team updated successfully",
+          team: updatedTeam
+        });
+      }
     } catch (error) {
+      console.error("Erreur lors de la mise à jour de l'équipe:", error);
       return res.status(500).json({ message: "Failed to update team" });
     }
   });
