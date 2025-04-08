@@ -6,6 +6,7 @@ export interface IStorage {
   // User operations
   getUser(id: number): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
+  getAllUsers(): Map<number, User>;
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: number, userData: Partial<User>): Promise<User | undefined>;
   
@@ -72,6 +73,10 @@ export class MemStorage implements IStorage {
   async getUserByEmail(email: string): Promise<User | undefined> {
     return Array.from(this.users.values()).find(user => user.email === email);
   }
+  
+  getAllUsers(): Map<number, User> {
+    return this.users;
+  }
 
   async createUser(userData: InsertUser): Promise<User> {
     const id = this.userIdCounter++;
@@ -81,7 +86,14 @@ export class MemStorage implements IStorage {
       userData.password = bcrypt.hashSync(userData.password, 10);
     }
     
-    const user: User = { ...userData, id, statisticsId: null, dateRegistered: new Date() };
+    const user: User = { 
+      ...userData, 
+      id, 
+      statisticsId: null, 
+      dateRegistered: new Date(),
+      role: userData.role || 'player', // Assurer que le rôle est défini
+      teamId: userData.teamId || null
+    };
     
     // Create initial statistics for player
     if (userData.role === 'player') {
@@ -127,7 +139,9 @@ export class MemStorage implements IStorage {
       id, 
       points: 0, 
       matchesPlayed: 0,
-      players: teamData.players || []
+      players: teamData.players || [],
+      logo: teamData.logo || null,
+      captainId: teamData.captainId || null
     };
     this.teams.set(id, team);
     return team;
@@ -179,7 +193,8 @@ export class MemStorage implements IStorage {
       ...matchData, 
       id, 
       scoreTeam1: 0, 
-      scoreTeam2: 0
+      scoreTeam2: 0,
+      status: matchData.status || 'pending' // Assurer que le statut est défini
     };
     this.matches.set(id, match);
     return match;
@@ -246,30 +261,36 @@ export class MemStorage implements IStorage {
     const team2 = await this.getTeam(match.team2Id);
     
     if (team1) {
-      let points = team1.points;
-      if (match.scoreTeam1 > match.scoreTeam2) {
+      let points = team1.points || 0;
+      const scoreTeam1 = match.scoreTeam1 || 0;
+      const scoreTeam2 = match.scoreTeam2 || 0;
+      
+      if (scoreTeam1 > scoreTeam2) {
         points += 3; // Win
-      } else if (match.scoreTeam1 === match.scoreTeam2) {
+      } else if (scoreTeam1 === scoreTeam2) {
         points += 1; // Draw
       }
       
       await this.updateTeam(team1.id, {
         points: points,
-        matchesPlayed: team1.matchesPlayed + 1
+        matchesPlayed: (team1.matchesPlayed || 0) + 1
       });
     }
     
     if (team2) {
-      let points = team2.points;
-      if (match.scoreTeam2 > match.scoreTeam1) {
+      let points = team2.points || 0;
+      const scoreTeam1 = match.scoreTeam1 || 0;
+      const scoreTeam2 = match.scoreTeam2 || 0;
+      
+      if (scoreTeam2 > scoreTeam1) {
         points += 3; // Win
-      } else if (match.scoreTeam1 === match.scoreTeam2) {
+      } else if (scoreTeam1 === scoreTeam2) {
         points += 1; // Draw
       }
       
       await this.updateTeam(team2.id, {
         points: points,
-        matchesPlayed: team2.matchesPlayed + 1
+        matchesPlayed: (team2.matchesPlayed || 0) + 1
       });
     }
   }

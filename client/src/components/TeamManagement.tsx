@@ -8,6 +8,14 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Table,
   TableBody,
   TableCell,
@@ -27,6 +35,8 @@ const TeamManagement = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [newPlayerId, setNewPlayerId] = useState("");
+  const [teamName, setTeamName] = useState("");
+  const [showCreateTeamDialog, setShowCreateTeamDialog] = useState(false);
 
   // Get user's team
   const { data: team, isLoading: isTeamLoading } = useQuery<Team>({
@@ -45,6 +55,39 @@ const TeamManagement = () => {
     team?.players && Array.isArray(team.players) && 
     team.players.includes(u.id)
   );
+
+  // Create team mutation
+  const createTeamMutation = useMutation({
+    mutationFn: (teamData: { name: string }) => {
+      return apiRequest(
+        "POST",
+        "/api/teams",
+        { 
+          name: teamData.name,
+          logo: null,
+          captainId: user?.id, 
+          players: [user?.id]
+        }
+      );
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Équipe créée",
+        description: "Votre équipe a été créée avec succès.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/teams"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/user/profile"] });
+      setShowCreateTeamDialog(false);
+      setTeamName("");
+    },
+    onError: (error: any) => {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: error.message || "Une erreur s'est produite lors de la création de l'équipe.",
+      });
+    }
+  });
 
   // Add player to team mutation
   const addPlayerMutation = useMutation({
@@ -76,6 +119,19 @@ const TeamManagement = () => {
     }
   });
 
+  const handleCreateTeam = () => {
+    if (!teamName.trim()) {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Veuillez entrer un nom d'équipe valide.",
+      });
+      return;
+    }
+    
+    createTeamMutation.mutate({ name: teamName });
+  };
+
   if (!user?.teamId && !isTeamLoading) {
     return (
       <div className="mb-8">
@@ -85,11 +141,48 @@ const TeamManagement = () => {
         <Card>
           <CardContent className="p-6 text-center">
             <p className="text-gray-500 mb-4">Vous n'êtes pas encore membre d'une équipe.</p>
-            <Button className="bg-primary hover:bg-primary-dark">
+            <Button 
+              className="bg-primary hover:bg-primary-dark"
+              onClick={() => setShowCreateTeamDialog(true)}
+            >
               Créer une équipe
             </Button>
           </CardContent>
         </Card>
+        
+        <Dialog open={showCreateTeamDialog} onOpenChange={setShowCreateTeamDialog}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Créer une nouvelle équipe</DialogTitle>
+              <DialogDescription>
+                Entrez les informations de votre nouvelle équipe. Vous serez automatiquement désigné comme capitaine.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <label htmlFor="teamName" className="text-right text-sm font-medium">
+                  Nom
+                </label>
+                <Input
+                  id="teamName"
+                  placeholder="Nom de l'équipe"
+                  className="col-span-3"
+                  value={teamName}
+                  onChange={(e) => setTeamName(e.target.value)}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button 
+                type="submit" 
+                onClick={handleCreateTeam}
+                disabled={createTeamMutation.isPending}
+              >
+                {createTeamMutation.isPending ? "Création..." : "Créer l'équipe"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     );
   }

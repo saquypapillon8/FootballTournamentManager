@@ -91,6 +91,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Get all users (for admin panel and team management)
+  app.get("/api/users", async (req: Request, res: Response) => {
+    try {
+      const users = Array.from(storage.getAllUsers().values()).map(user => {
+        // Don't return the password
+        const { password, ...userWithoutPassword } = user;
+        return userWithoutPassword;
+      });
+      return res.status(200).json(users);
+    } catch (error) {
+      return res.status(500).json({ message: "Failed to get users" });
+    }
+  });
+  
   // Team routes
   app.get("/api/teams", async (req: Request, res: Response) => {
     try {
@@ -116,7 +130,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  app.post("/api/teams", authenticateToken, checkRole(['admin', 'superadmin']), async (req: Request, res: Response) => {
+  app.post("/api/teams", authenticateToken, async (req: Request, res: Response) => {
     try {
       const validatedData = insertTeamSchema.parse(req.body);
       
