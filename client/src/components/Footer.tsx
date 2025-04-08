@@ -30,16 +30,16 @@ const Footer = () => {
           </div>
           <nav className="mt-4 md:mt-0 flex flex-wrap justify-center md:justify-start space-x-6 text-sm">
             <Link href="#">
-              <a className="text-gray-400 hover:text-white">À propos</a>
+              <span className="text-gray-400 hover:text-white cursor-pointer">À propos</span>
             </Link>
             <Link href="#">
-              <a className="text-gray-400 hover:text-white">Contact</a>
+              <span className="text-gray-400 hover:text-white cursor-pointer">Contact</span>
             </Link>
             <Link href="#">
-              <a className="text-gray-400 hover:text-white">Conditions d'utilisation</a>
+              <span className="text-gray-400 hover:text-white cursor-pointer">Conditions d'utilisation</span>
             </Link>
             <Link href="#">
-              <a className="text-gray-400 hover:text-white">Politique de confidentialité</a>
+              <span className="text-gray-400 hover:text-white cursor-pointer">Politique de confidentialité</span>
             </Link>
           </nav>
         </div>

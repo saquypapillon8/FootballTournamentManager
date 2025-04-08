@@ -50,10 +50,10 @@ const UpcomingMatches = ({ limit }: UpcomingMatchesProps) => {
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Matchs à venir</h2>
           <Link href="/matches">
-            <a className="text-indigo-600 hover:text-indigo-700 flex items-center text-sm font-medium">
+            <span className="text-indigo-600 hover:text-indigo-700 flex items-center text-sm font-medium cursor-pointer">
               Voir tous les matchs
               <ArrowRight className="ml-1 h-4 w-4" />
-            </a>
+            </span>
           </Link>
         </div>
         <Card className="animate-pulse">
@@ -78,10 +78,10 @@ const UpcomingMatches = ({ limit }: UpcomingMatchesProps) => {
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Matchs à venir</h2>
           <Link href="/matches">
-            <a className="text-indigo-600 hover:text-indigo-700 flex items-center text-sm font-medium">
+            <span className="text-indigo-600 hover:text-indigo-700 flex items-center text-sm font-medium cursor-pointer">
               Voir tous les matchs
               <ArrowRight className="ml-1 h-4 w-4" />
-            </a>
+            </span>
           </Link>
         </div>
         <Card>
@@ -100,10 +100,10 @@ const UpcomingMatches = ({ limit }: UpcomingMatchesProps) => {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-900">Matchs à venir</h2>
         <Link href="/matches">
-          <a className="text-indigo-600 hover:text-indigo-700 flex items-center text-sm font-medium">
+          <span className="text-indigo-600 hover:text-indigo-700 flex items-center text-sm font-medium cursor-pointer">
             Voir tous les matchs
             <ArrowRight className="ml-1 h-4 w-4" />
-          </a>
+          </span>
         </Link>
       </div>
       
