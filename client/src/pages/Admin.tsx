@@ -1,18 +1,19 @@
 import { useEffect } from "react";
-import { useLocation } from "wouter";
+import { Link } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
+import { useNavigation } from "@/lib/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Admin = () => {
   const { user, isAdmin, isSuperAdmin } = useAuth();
-  const [, navigate] = useLocation();
+  const { navigateTo } = useNavigation();
 
   useEffect(() => {
     if (!user || (!isAdmin && !isSuperAdmin)) {
-      navigate("/login");
+      navigateTo("/login");
     }
-  }, [user, isAdmin, isSuperAdmin, navigate]);
+  }, [user, isAdmin, isSuperAdmin, navigateTo]);
 
   if (!user || (!isAdmin && !isSuperAdmin)) {
     return (
@@ -26,12 +27,11 @@ const Admin = () => {
     <div className="container mx-auto p-4 md:p-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Panneau d'administration</h1>
-        <Button 
-          onClick={() => navigate("/dashboard")}
-          className="bg-blue-600 hover:bg-blue-700"
-        >
-          Retour au tableau de bord
-        </Button>
+        <Link href="/dashboard">
+          <Button className="bg-blue-600 hover:bg-blue-700">
+            Retour au tableau de bord
+          </Button>
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -43,12 +43,11 @@ const Admin = () => {
             <p className="text-gray-600">Créez, modifiez ou supprimez des équipes.</p>
           </CardContent>
           <CardFooter>
-            <Button 
-              className="w-full" 
-              onClick={() => navigate("/teams")}
-            >
-              Gérer les équipes
-            </Button>
+            <Link href="/teams" className="w-full">
+              <Button className="w-full">
+                Gérer les équipes
+              </Button>
+            </Link>
           </CardFooter>
         </Card>
 
@@ -60,12 +59,11 @@ const Admin = () => {
             <p className="text-gray-600">Planifiez et gérez les matchs du tournoi.</p>
           </CardContent>
           <CardFooter>
-            <Button 
-              className="w-full" 
-              onClick={() => navigate("/matches")}
-            >
-              Gérer les matchs
-            </Button>
+            <Link href="/matches" className="w-full">
+              <Button className="w-full">
+                Gérer les matchs
+              </Button>
+            </Link>
           </CardFooter>
         </Card>
 
@@ -77,12 +75,11 @@ const Admin = () => {
             <p className="text-gray-600">Consultez et modifiez les statistiques des joueurs.</p>
           </CardContent>
           <CardFooter>
-            <Button 
-              className="w-full" 
-              onClick={() => navigate("/leaderboard")}
-            >
-              Voir les statistiques
-            </Button>
+            <Link href="/leaderboard" className="w-full">
+              <Button className="w-full">
+                Voir les statistiques
+              </Button>
+            </Link>
           </CardFooter>
         </Card>
       </div>

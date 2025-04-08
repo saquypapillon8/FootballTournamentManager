@@ -9,7 +9,10 @@ import { useLocation } from 'wouter';
  * @param path Chemin vers lequel naviguer
  */
 export function navigateTo(path: string): void {
-  window.location.href = path;
+  // Utilisons l'API History pour une navigation sans rechargement
+  window.history.pushState({}, '', path);
+  // Déclencher un événement pour informer l'application du changement d'URL
+  window.dispatchEvent(new Event('popstate'));
 }
 
 /**
