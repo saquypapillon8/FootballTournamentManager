@@ -1,4 +1,5 @@
-import { pgTable, text, serial, integer, boolean, timestamp, json } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, json, primaryKey } from "drizzle-orm/pg-core";
+import { relations } from 'drizzle-orm';
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -71,6 +72,44 @@ export const insertStatisticsSchema = createInsertSchema(statistics).omit({
   yellowCards: true,
   redCards: true,
 });
+
+// Définition explicite des relations
+export const usersRelations = relations(users, ({ one }) => ({
+  team: one(teams, {
+    fields: [users.teamId],
+    references: [teams.id],
+  }),
+  statistics: one(statistics, {
+    fields: [users.statisticsId],
+    references: [statistics.id],
+  }),
+}));
+
+export const teamsRelations = relations(teams, ({ one, many }) => ({
+  captain: one(users, {
+    fields: [teams.captainId],
+    references: [users.id],
+  }),
+  teamMembers: many(users),
+}));
+
+export const matchesRelations = relations(matches, ({ one }) => ({
+  team1: one(teams, {
+    fields: [matches.team1Id],
+    references: [teams.id],
+  }),
+  team2: one(teams, {
+    fields: [matches.team2Id],
+    references: [teams.id],
+  }),
+}));
+
+export const statisticsRelations = relations(statistics, ({ one }) => ({
+  player: one(users, {
+    fields: [statistics.playerId],
+    references: [users.id],
+  }),
+}));
 
 // Export types
 export type InsertUser = z.infer<typeof insertUserSchema>;
