@@ -94,13 +94,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all users (for admin panel and team management)
   app.get("/api/users", async (req: Request, res: Response) => {
     try {
-      const users = Array.from(storage.getAllUsers().values()).map(user => {
-        // Don't return the password
-        const { password, ...userWithoutPassword } = user;
-        return userWithoutPassword;
+      const userMap = await storage.getAllUsers();
+      // Convertir la Map en array pour pouvoir traiter les utilisateurs
+      const users = Array.from(userMap.values()).map(user => {
+        if (user && typeof user === 'object' && 'password' in user) {
+          // Ne pas renvoyer le mot de passe
+          const { password, ...userWithoutPassword } = user as User & { password: string };
+          return userWithoutPassword;
+        }
+        return user;
       });
       return res.status(200).json(users);
     } catch (error) {
+      console.error("Erreur lors de la récupération des utilisateurs:", error);
       return res.status(500).json({ message: "Failed to get users" });
     }
   });

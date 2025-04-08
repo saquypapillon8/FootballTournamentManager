@@ -6,43 +6,9 @@ import { eq, and, lt, gt } from "drizzle-orm";
 import bcrypt from "bcrypt";
 
 export class DatabaseStorage implements IStorage {
-  private userIdCounter: number = 1;
-  private teamIdCounter: number = 1;
-  private matchIdCounter: number = 1;
-  private statisticsIdCounter: number = 1;
-
   constructor() {
-    // Initialiser les compteurs en vérifiant la base de données
-    this.initCounters();
     // Créer un utilisateur super admin si aucun n'existe
     this.ensureSuperAdmin();
-  }
-
-  private async initCounters(): Promise<void> {
-    try {
-      // Obtenir le dernier ID pour chaque table
-      const lastUser = await db.select().from(users).orderBy(users.id).limit(1);
-      if (lastUser.length > 0) {
-        this.userIdCounter = lastUser[0].id + 1;
-      }
-
-      const lastTeam = await db.select().from(teams).orderBy(teams.id).limit(1);
-      if (lastTeam.length > 0) {
-        this.teamIdCounter = lastTeam[0].id + 1;
-      }
-
-      const lastMatch = await db.select().from(matches).orderBy(matches.id).limit(1);
-      if (lastMatch.length > 0) {
-        this.matchIdCounter = lastMatch[0].id + 1;
-      }
-
-      const lastStat = await db.select().from(statistics).orderBy(statistics.id).limit(1);
-      if (lastStat.length > 0) {
-        this.statisticsIdCounter = lastStat[0].id + 1;
-      }
-    } catch (error) {
-      console.error("Erreur lors de l'initialisation des compteurs:", error);
-    }
   }
 
   private async ensureSuperAdmin(): Promise<void> {
@@ -73,14 +39,20 @@ export class DatabaseStorage implements IStorage {
     return user || undefined;
   }
 
-  getAllUsers(): Map<number, User> {
-    const userMap = new Map<number, User>();
-    db.select().from(users).then(userList => {
+  async getAllUsers(): Promise<Map<number, User>> {
+    try {
+      const userList = await db.select().from(users);
+      const userMap = new Map<number, User>();
+      
       userList.forEach(user => {
         userMap.set(user.id, user);
       });
-    });
-    return userMap;
+      
+      return userMap;
+    } catch (error) {
+      console.error("Erreur lors de la récupération des utilisateurs:", error);
+      return new Map<number, User>();
+    }
   }
 
   async createUser(userData: InsertUser): Promise<User> {
