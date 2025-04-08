@@ -2,8 +2,25 @@ import { User, InsertUser, Team, InsertTeam, Match, InsertMatch, Statistics, Ins
 import { users, teams, matches, statistics } from "@shared/schema";
 import { IStorage } from "./storage";
 import { db } from "./db";
-import { eq, and, lt, gt } from "drizzle-orm";
+import { eq, and, lt, gt, sql } from "drizzle-orm";
 import bcrypt from "bcrypt";
+
+// Fonction pour générer un ID à 6 chiffres aléatoire
+async function generateSixDigitId(): Promise<number> {
+  // Génère un nombre entre 100000 et 999999 (6 chiffres)
+  const min = 100000;
+  const max = 999999;
+  const randomId = Math.floor(Math.random() * (max - min + 1)) + min;
+  
+  // Vérifie si l'ID existe déjà
+  const [existingUser] = await db.select().from(users).where(eq(users.id, randomId));
+  if (existingUser) {
+    // Si l'ID existe déjà, génère un nouveau
+    return generateSixDigitId();
+  }
+  
+  return randomId;
+}
 
 export class DatabaseStorage implements IStorage {
   constructor() {
@@ -62,9 +79,12 @@ export class DatabaseStorage implements IStorage {
         userData.password = bcrypt.hashSync(userData.password, 10);
       }
       
-      // Préparation des données pour l'insertion sans spécifier l'ID
-      // PostgreSQL va auto-incrémenter l'ID grâce au SERIAL
+      // Générer un ID unique à 6 chiffres
+      const userId = await generateSixDigitId();
+      
+      // Préparation des données pour l'insertion avec l'ID personnalisé
       const insertData = {
+        id: userId,
         name: userData.name,
         email: userData.email,
         password: userData.password,

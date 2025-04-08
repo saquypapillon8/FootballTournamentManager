@@ -196,7 +196,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  app.put("/api/teams/:id", authenticateToken, checkRole(['admin', 'superadmin']), async (req: Request, res: Response) => {
+  app.put("/api/teams/:id", authenticateToken, async (req: Request, res: Response) => {
     try {
       const teamId = parseInt(req.params.id);
       const team = await storage.getTeam(teamId);

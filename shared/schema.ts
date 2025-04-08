@@ -5,7 +5,7 @@ import { z } from "zod";
 
 // User model (players and admins)
 export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
+  id: integer("id").primaryKey(), // ID personnalisé à 6 chiffres
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
