@@ -62,13 +62,15 @@ export class DatabaseStorage implements IStorage {
         userData.password = bcrypt.hashSync(userData.password, 10);
       }
       
-      // Préparation des données pour l'insertion
+      // Préparation des données pour l'insertion sans spécifier l'ID
+      // PostgreSQL va auto-incrémenter l'ID grâce au SERIAL
       const insertData = {
         name: userData.name,
         email: userData.email,
         password: userData.password,
         role: userData.role || 'player',
-        teamId: userData.teamId || null
+        teamId: userData.teamId || null,
+        dateRegistered: new Date() // Assurons-nous que la date est définie
       };
       
       // Insertion de l'utilisateur et récupération des données générées
