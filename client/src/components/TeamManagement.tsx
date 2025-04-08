@@ -293,7 +293,12 @@ const TeamManagement = () => {
                               <UserIcon className="h-5 w-5 text-gray-400" />
                             </AvatarFallback>
                           </Avatar>
-                          <div className="font-medium">{member.name}</div>
+                          <div className="space-y-1">
+                            <div className="font-medium">{member.name}</div>
+                            <Badge variant="outline" className="bg-indigo-100 text-indigo-800 hover:bg-indigo-100">
+                              ID: {member.id}
+                            </Badge>
+                          </div>
                         </div>
                       </TableCell>
                       <TableCell className="text-sm text-gray-500">
@@ -366,7 +371,7 @@ const TeamManagement = () => {
               <DialogHeader>
                 <DialogTitle>Liste des utilisateurs disponibles</DialogTitle>
                 <DialogDescription>
-                  Sélectionnez un utilisateur à ajouter à votre équipe. Vous avez besoin de son ID.
+                  Sélectionnez un utilisateur à ajouter à votre équipe.
                 </DialogDescription>
               </DialogHeader>
               <div className="overflow-x-auto max-h-[400px]">
@@ -384,7 +389,11 @@ const TeamManagement = () => {
                       !teamMembers?.some(m => m.id === u.id)
                     ).map(user => (
                       <TableRow key={user.id}>
-                        <TableCell className="font-medium">{user.id}</TableCell>
+                        <TableCell className="font-medium">
+                          <Badge variant="outline" className="bg-indigo-100 text-indigo-800 hover:bg-indigo-100">
+                            {user.id}
+                          </Badge>
+                        </TableCell>
                         <TableCell>{user.name}</TableCell>
                         <TableCell>{user.email}</TableCell>
                         <TableCell>

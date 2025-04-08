@@ -78,6 +78,11 @@ const PlayerProfile = () => {
               
               <div className="text-center md:text-left">
                 <h1 className="text-2xl font-bold text-gray-900 mb-2">{playerData.name}</h1>
+                <div className="flex items-center justify-center md:justify-start mb-4">
+                  <Badge className="bg-indigo-100 text-indigo-800 hover:bg-indigo-100">
+                    ID: {playerData.id}
+                  </Badge>
+                </div>
                 {playerTeam && (
                   <div className="flex items-center justify-center md:justify-start mb-4">
                     <Volleyball className="mr-2 h-5 w-5 text-primary" />
