@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { Link } from "wouter";
 import LiveMatches from "@/components/LiveMatches";
 import UpcomingMatches from "@/components/UpcomingMatches";
@@ -28,23 +29,22 @@ const Home = () => {
               </div>
             </div>
             <div className="md:w-1/2 bg-teal-800 p-8 flex items-center justify-center">
-              <div className="rounded-lg shadow-lg max-h-80 overflow-hidden">
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className="h-full w-full object-cover"
-                  viewBox="0 0 800 500"
-                  fill="none"
-                >
-                  <rect width="800" height="500" fill="#0F766E" />
-                  <circle cx="400" cy="250" r="150" stroke="white" strokeWidth="8" fill="none" />
-                  <path d="M400 100 L400 400" stroke="white" strokeWidth="4" strokeDasharray="15,15" />
-                  <circle cx="400" cy="250" r="50" stroke="white" strokeWidth="4" fill="none" />
-                  <path d="M320 180 L480 320" stroke="white" strokeWidth="3" />
-                  <path d="M320 320 L480 180" stroke="white" strokeWidth="3" />
-                  <circle cx="400" cy="250" r="10" fill="white" />
-                  <text x="300" y="70" fill="white" fontSize="24" fontWeight="bold">FOOTTOURNOI</text>
-                  <text x="330" y="450" fill="white" fontSize="18">SAISON 2023</text>
-                </svg>
+              <div className="rounded-lg shadow-lg max-h-80 overflow-hidden w-full">
+                <Carousel className="w-full" opts={{ loop: true, align: "start" }}>
+                  <CarouselContent>
+                    {["/attached_assets/1.jpg", "/attached_assets/2.jpg", "/attached_assets/3.jpg"].map((src, index) => (
+                      <CarouselItem key={index}>
+                        <div className="relative w-full aspect-[8/5]">
+                          <img
+                            src={src}
+                            alt={`Slide ${index + 1}`}
+                            className="object-cover w-full h-full rounded-lg"
+                          />
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                </Carousel>
               </div>
             </div>
           </div>
