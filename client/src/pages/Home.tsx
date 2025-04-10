@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import LiveMatches from "@/components/LiveMatches";
@@ -50,14 +51,12 @@ const Home = () => {
           </div>
         </div>
         
-        {/* Live Matches Section */}
-        <LiveMatches limit={2} />
-        
-        {/* Upcoming Matches Section */}
-        <UpcomingMatches limit={3} />
-        
-        {/* Leaderboard Preview */}
-        <LeaderboardPreview limit={5} />
+        {/* Sections des matchs et classements */}
+        <div className="space-y-8">
+          <LiveMatches limit={2} />
+          <UpcomingMatches limit={3} />
+          <LeaderboardPreview limit={5} />
+        </div>
       </div>
     </div>
   );
