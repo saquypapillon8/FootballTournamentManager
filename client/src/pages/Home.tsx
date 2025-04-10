@@ -21,7 +21,7 @@ const Home = () => {
         <div className="bg-teal-700 rounded-lg shadow-xl overflow-hidden mb-8">
           <div className="md:flex">
             <div className="p-8 md:w-1/2 flex flex-col justify-center">
-              <h1 className="text-3xl font-bold text-white mb-4">Tournoi de Football - Saison 2023</h1>
+              <h1 className="text-3xl font-bold text-white mb-4">Mde Tournoi - edition 3</h1>
               <p className="text-teal-300 mb-6">Suivez tous les matchs en direct, consultez les classements et les statistiques des joueurs.</p>
               <div className="flex space-x-4">
                 <Link href="/matches">
