@@ -37,7 +37,15 @@ const Home = () => {
             </div>
             <div className="md:w-1/2 bg-teal-800 p-8 flex items-center justify-center">
               <div className="rounded-lg shadow-lg max-h-80 overflow-hidden">
-                <Carousel className="w-full" opts={{ loop: true, align: "start" }}>
+                <Carousel 
+                  className="w-full" 
+                  opts={{ 
+                    loop: true, 
+                    align: "start",
+                    delay: 3000,
+                    autoplay: true 
+                  }}
+                >
                   <CarouselContent>
                     <CarouselItem>
                       <img 
