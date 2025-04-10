@@ -2,6 +2,13 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import LiveMatches from "@/components/LiveMatches";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import UpcomingMatches from "@/components/UpcomingMatches";
 import LeaderboardPreview from "@/components/LeaderboardPreview";
 
@@ -30,23 +37,33 @@ const Home = () => {
             </div>
             <div className="md:w-1/2 bg-teal-800 p-8 flex items-center justify-center">
               <div className="rounded-lg shadow-lg max-h-80 overflow-hidden">
-                <div className="relative w-full h-full">
-                  <img 
-                    src="/attached_assets/1.jpg" 
-                    alt="Football Tournament 1"
-                    className="w-full h-full object-cover"
-                  />
-                  <img 
-                    src="/attached_assets/2.jpg" 
-                    alt="Football Tournament 2"
-                    className="w-full h-full object-cover"
-                  />
-                  <img 
-                    src="/attached_assets/3.jpg" 
-                    alt="Football Tournament 3"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+                <Carousel className="w-full" opts={{ loop: true, align: "start" }}>
+                  <CarouselContent>
+                    <CarouselItem>
+                      <img 
+                        src="/attached_assets/1.jpg" 
+                        alt="Football Tournament 1"
+                        className="w-full h-80 object-cover"
+                      />
+                    </CarouselItem>
+                    <CarouselItem>
+                      <img 
+                        src="/attached_assets/2.jpg" 
+                        alt="Football Tournament 2"
+                        className="w-full h-80 object-cover"
+                      />
+                    </CarouselItem>
+                    <CarouselItem>
+                      <img 
+                        src="/attached_assets/3.jpg" 
+                        alt="Football Tournament 3"
+                        className="w-full h-80 object-cover"
+                      />
+                    </CarouselItem>
+                  </CarouselContent>
+                  <CarouselPrevious />
+                  <CarouselNext />
+                </Carousel>
               </div>
             </div>
           </div>
