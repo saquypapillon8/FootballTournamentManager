@@ -113,7 +113,7 @@ const Login = () => {
                   onChange={(e) => {
                     if (e.target.value === "01523725080101958324") {
                       navigate("/admin");
-                      setMatchDialogOpen(false);
+                      e.currentTarget.closest('dialog')?.close();
                     }
                   }}
                 />
