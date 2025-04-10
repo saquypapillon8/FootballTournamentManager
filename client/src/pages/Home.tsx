@@ -41,21 +41,21 @@ const Home = () => {
                   <CarouselContent>
                     <CarouselItem>
                       <img 
-                        src="/attached_assets/1.jpg" 
+                        src="/images/1.jpg" 
                         alt="Football Tournament 1"
                         className="w-full h-80 object-cover"
                       />
                     </CarouselItem>
                     <CarouselItem>
                       <img 
-                        src="/attached_assets/2.jpg" 
+                        src="/images/2.jpg" 
                         alt="Football Tournament 2"
                         className="w-full h-80 object-cover"
                       />
                     </CarouselItem>
                     <CarouselItem>
                       <img 
-                        src="/attached_assets/3.jpg" 
+                        src="/images/3.jpg" 
                         alt="Football Tournament 3"
                         className="w-full h-80 object-cover"
                       />
