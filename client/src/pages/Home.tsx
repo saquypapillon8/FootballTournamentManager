@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import LiveMatches from "@/components/LiveMatches";
@@ -11,6 +10,8 @@ import {
 } from "@/components/ui/carousel";
 import UpcomingMatches from "@/components/UpcomingMatches";
 import LeaderboardPreview from "@/components/LeaderboardPreview";
+import Autoplay from 'embla-carousel-autoplay'; //Import the Autoplay plugin
+
 
 const Home = () => {
   return (
@@ -45,6 +46,12 @@ const Home = () => {
                     delay: 3000,
                     autoplay: true 
                   }}
+                  plugins={[
+                    Autoplay({
+                      delay: 3000,
+                      stopOnInteraction: false,
+                    })
+                  ]}
                 >
                   <CarouselContent>
                     <CarouselItem>
@@ -76,7 +83,7 @@ const Home = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Sections des matchs et classements */}
         <div className="space-y-8">
           <LiveMatches limit={2} />
