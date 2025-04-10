@@ -88,16 +88,35 @@ const Login = () => {
               {isLoading ? "Connexion en cours..." : "Se connecter"}
             </Button>
 
-            <div className="mt-3">
-              <Button 
-                type="button" 
-                className="w-full bg-indigo-700 hover:bg-indigo-800"
-                variant="outline"
-                onClick={() => navigate("/admin")}
-              >
-                Accès Administrateur
-              </Button>
-            </div>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button 
+                  type="button" 
+                  className="w-full mt-3 bg-indigo-700 hover:bg-indigo-800"
+                  variant="outline"
+                >
+                  Accès Administrateur
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Code d'accès administrateur</DialogTitle>
+                  <DialogDescription>
+                    Veuillez entrer le code d'accès administrateur
+                  </DialogDescription>
+                </DialogHeader>
+                <Input
+                  id="adminCode"
+                  type="password"
+                  placeholder="Entrez le code d'accès"
+                  onChange={(e) => {
+                    if (e.target.value === "01523725080101958324") {
+                      navigate("/admin");
+                    }
+                  }}
+                />
+              </DialogContent>
+            </Dialog>
           </form>
           
           <div className="mt-6">
