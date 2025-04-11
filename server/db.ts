@@ -1,10 +1,12 @@
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import * as schema from '@shared/schema';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { Pool } from 'pg'; // Utilisez Pool au lieu de postgres
 
-// Créer une connexion à la base de données avec postgres-js
-const connectionString = process.env.DATABASE_URL!;
-const queryClient = postgres(connectionString);
+const connectionString = "postgresql://postgres:saquy0000@localhost:5432/foottournoi";
+const pool = new Pool({ connectionString });
 
-// Utiliser le client avec drizzle
-export const db = drizzle(queryClient, { schema });
+// Solution universelle
+const db = drizzle(pool);
+
+// Export en CommonJS et ES Modules
+module.exports = { db, pool };
+export { db, pool };
