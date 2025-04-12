@@ -1,30 +1,21 @@
-const { db } = require('./db-commonjs.cjs');
-const { users } = require('./schema.cjs'); // Import manquant
-const { eq } = require('drizzle-orm'); // Import manquant
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const crypto = require('crypto'); // Pour randomUUID()
+const { createClient } = require('@supabase/supabase-js');
 
-// ... reste du code inchangé ...
+const supabase = createClient(
+  '[https://fwagotasonvgpdqmedqk.supabase.co](https://fwagotasonvgpdqmedqk.supabase.co)',
+  process.env.SUPABASE_KEY
+);
 
-async function register(username, password) {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    return db.insert(users).values({ 
-      // Supprimez complètement la ligne id
-      username, 
-      password_hash: hashedPassword,
-      role: 'player'
+module.exports = {
+  register: async (email, password) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { role: 'player' } } // Ajoutez le rôle par défaut
     });
+    return { data, error };
+  },
+  login: async (email, password) => {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    return { data, error };
   }
-
-  async function login(username, password) {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    if (!user) throw new Error('Utilisateur non trouvé');
-    
-    const valid = await bcrypt.compare(password, user.password_hash);
-    if (!valid) throw new Error('Mot de passe incorrect');
-    
-    return jwt.sign({ userId: user.id, role: user.role }, 'votre_cle_secrete');
-  }
-
-module.exports = { register, login };
+};
